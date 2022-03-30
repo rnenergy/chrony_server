@@ -1,0 +1,36 @@
+---
+
+- name: Install Chrony as NTP Server
+  hosts: ntpservers
+  vars:
+    - subnet: 0.0.0.0/24
+    - timezone: Europe/Bratislava
+  become: yes
+  
+  tasks:
+  - name: update packages
+    apt:
+     update_cache: yes
+  
+  - name: install Chrony
+    shell: apt install chrony -y
+    
+  - name: change chrony conf
+    shell: echo 'allow {{subnet}}' >> /etc/chrony/chrony.conf
+      
+  - name: Reload service Chrony, in all cases
+    systemd:
+      name: chrony
+      state: stopped
+  
+  - name: set timezone
+    shell: timedatectl set-timezone {{timezone}}
+
+  - name: Make sure chrony.service is started
+    systemd:
+      name: chrony.service
+      state: started
+      
+  - name: install prometheus Node-exporter
+    shell: apt install prometheus-node-exporter -y
+      
