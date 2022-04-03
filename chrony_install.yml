@@ -1,7 +1,7 @@
 ---
 
 - name: Install Chrony as NTP Server
-  hosts: ntpservers
+  hosts: servers
   vars:
     - subnet: 0.0.0.0/24
     - timezone: Europe/Bratislava
